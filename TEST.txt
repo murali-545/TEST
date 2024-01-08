@@ -1,0 +1,79 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class DynamicTableExample {
+
+    public static void main(String[] args) {
+        // Set the path to the ChromeDriver executable
+        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
+
+        // Initialize the ChromeDriver
+        WebDriver driver = new ChromeDriver();
+
+        // Navigate to the URL
+        driver.get("https://testpages.herokuapp.com/styled/tag/dynamic-table.html");
+
+        // Find and click the "Table Data" button
+        WebElement tableDataButton = driver.findElement(By.id("table-data-button"));
+        tableDataButton.click();
+
+        // Wait for the new input text box to be displayed (you might need to add a wait here)
+        // Replace the following line with an appropriate wait mechanism
+        try {
+            Thread.sleep(2000); // Sleep for 2 seconds as an example; use a proper wait instead
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Assuming the input text box has an id, you can locate it
+        WebElement inputTextBox = driver.findElement(By.id("input-text-box"));
+
+        // Insert the provided data into the input text box
+        String inputData = "[{\"name\" : \"Bob\", \"age\" : 20, \"gender\": \"male\"}, " +
+                "{\"name\": \"George\", \"age\" : 42, \"gender\": \"male\"}, " +
+                "{\"name\": \"Sara\", \"age\" : 42, \"gender\": \"female\"}, " +
+                "{\"name\": \"Conor\", \"age\" : 40, \"gender\": \"male\"}, " +
+                "{\"name\": \"Jennifer\", \"age\" : 42, \"gender\": \"female\"}]";
+        inputTextBox.sendKeys(inputData);
+
+        // Find and click the "Refresh Table" button
+        WebElement refreshTableButton = driver.findElement(By.id("refresh-table-button"));
+        refreshTableButton.click();
+
+        // Assuming the table has an id, you can locate it
+        WebElement table = driver.findElement(By.id("table_id"));
+
+        // Get the rows of the table
+        List<WebElement> rows = table.findElements(By.tagName("tr"));
+
+        // Create a list to store table data as strings
+        List<String> tableDataList = new ArrayList<>();
+
+        // Iterate through each row, starting from the second row (skipping header)
+        for (int i = 1; i < rows.size(); i++) {
+            // Get the columns in each row
+            List<WebElement> columns = rows.get(i).findElements(By.tagName("td"));
+
+            // Assuming "Name" is in the first column and "Age" is in the second column
+            String name = columns.get(0).getText();
+            String age = columns.get(1).getText();
+
+            // Build a string and add it to the list
+            String tableDataRow = "Name: " + name + ", Age: " + age;
+            tableDataList.add(tableDataRow);
+        }
+
+        // Print or further process the table data as needed
+        for (String tableDataRow : tableDataList) {
+            System.out.println(tableDataRow);
+        }
+
+        // Close the browser
+        driver.quit();
+    }
+}
